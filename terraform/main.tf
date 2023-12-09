@@ -123,6 +123,7 @@ resource "aws_instance" "python-server" {
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
     sudo systemctl enable docker
+    aws configure
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 590654135973.dkr.ecr.us-east-1.amazonaws.com
     docker pull 590654135973.dkr.ecr.us-east-1.amazonaws.com/python-server:latest
     docker run -d --name temp_container 590654135973.dkr.ecr.us-east-1.amazonaws.com/python-server:latest

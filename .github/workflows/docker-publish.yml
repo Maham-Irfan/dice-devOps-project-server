@@ -82,6 +82,23 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # AWS Configure for ECR
+      - name: AWS Configure for ECR
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set default.region ${{ secrets.AWS_REGION }}
+
+      # Authenticate Docker to AWS ECR
+      - name: Authenticate Docker to AWS ECR
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      # Tag Docker image for ECR
+      - name: Tag Docker image for ECR
+        run: docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your_repository:${{ steps.meta.outputs.tags }}
+
+      # Push Docker image to ECR
+      - name: Push Docker image to ECR
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your_repository:${{ steps.meta.outputs.tags }}
+      
       
       - name: Slack Notification
         uses: act10ns/slack@v1
@@ -90,4 +107,5 @@ jobs:
           channel: '#project'
           message: Deploying Python Server
         if: always()
+
       
