@@ -93,7 +93,7 @@ jobs:
 
       # Tag Docker image for ECR
       - name: Tag Docker image for ECR
-        run: docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your_repository:${{ steps.meta.outputs.tags }}
+        run: docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your_repository:latest
 
       # Push Docker image to ECR
       - name: Push Docker image to ECR
