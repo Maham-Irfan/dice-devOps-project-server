@@ -1,4 +1,4 @@
-name: Docker
+name: Deploy Python Server
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -6,8 +6,6 @@ name: Docker
 # documentation.
 
 on:
-  schedule:
-    - cron: '34 7 * * *'
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
@@ -17,13 +15,14 @@ on:
 
 env:
   # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
+  REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: mahamirfan99/dice-devops-project-server
 
 
 jobs:
-  build:
+  
+  deployDockerImage:
 
     runs-on: ubuntu-latest
     permissions:
@@ -58,8 +57,9 @@ jobs:
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}  # Update with your Docker Hub username
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Update with your Docker Hub password
+
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -96,3 +96,5 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+  
