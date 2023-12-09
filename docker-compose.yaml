@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  python-server:
+    container_name: python-server
+    build: .
+    image: python-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - servervol:/serverdata
+  prometheus:
+    image: prom/prometheus:latest
+    restart: "always"
+    volumes:
+      - ./prometheus.yaml:etc/prometheus/prometheus/yaml
+    command:
+      - "--config.file=/etc/prometheus/prometheus/yaml"
+    ports:
+      - 3020:9090
+volumes:
+  servervol:
+    name: servervol
